@@ -24,7 +24,6 @@ export default class ExternalServices {
         const results = await fetch(`${baseURL}SetList.json`);
         const data = await convertToJson(results);
         const allSets = data.data;
-        console.log(allSets);
         const setsWithBoosters = await filterForBoosters(allSets);
         return setsWithBoosters;
     }

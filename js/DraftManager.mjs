@@ -1,6 +1,6 @@
 import ExternalServices from "./externalServices.mjs";
-import { weightedRandomChoice } from "./utils.mjs";
-
+import { weightedRandomChoice, shuffleArray } from "./utils.mjs";
+import Drafter from "./Drafter.mjs";
 
 const external = new ExternalServices;
 
@@ -41,20 +41,62 @@ export default class DraftManager {
     }
 
     startDraft(){
-        //create user drafter
-        //create bot drafters
-        //shuffle drafter positions
-        this.runDraft();
-        this.endDraft();
+        this.drafters = [new Drafter("user")];
+        for(let i = 0; i < this.botCount; i++){
+            this.drafters.push(new Drafter("bot"))
+        }
+        shuffleArray(this.drafters);
+        console.log(this.drafters);
+        const testBooster = this.fillPack(this.pickPack());
+        this.totalRounds = Math.ceil(40 / testBooster.length);
+        this.currentRound = 1;
+        this.startRound();
+            
+        
+    }
+
+    startRound(){
+        if(this.currentRound <= this.totalRounds){
+            this.buildBoosters();
+            console.log(`Round ${this.currentRound} boosters:`);
+            console.log(this.boostersList);
+            this.drafters.forEach(drafter => {
+                drafter.currentPack = this.boostersList.pop()
+            });
+            this.currentPick = 0;
+            this.advanceDraft();
+        } else {
+            this.endDraft();
+        }
     }
 
 
-    runDraft(){
-        for(let round = 1; round <= 3; round++){
-            this.buildBoosters();
-            console.log(`Round ${round} boosters:`);
-            console.log(this.boostersList);
+    advanceDraft(){
+        if(this.drafters[0].currentPack.length > 0){
+            if(this.currentRound % 2 == 1){
+                const asideBooster = this.drafters[0].currentPack;
+                for(let i = 0; i < this.drafters.length - 1; i++){
+                    this.drafters[i].currentPack = this.drafters[i + 1].currentPack;
+                }
+                this.drafters[this.drafters.length - 1].currentPack = asideBooster;
+            } else{
+                const asideBooster = this.drafters[this.drafters.length - 1].currentPack;
+                for(let i = this.drafters.length - 1; i > 0; i--){
+                    this.drafters[i].currentPack = this.drafters[i - 1].currentPack;
+                }
+                this.drafters[0].currentPack = asideBooster;
+            }
+            this.drawDraftHeader();
+            this.drafters.forEach(drafter => drafter.processPack());
+            this.advanceDraft();
+        } else {
+            this.currentRound++;
+            this.startRound();
         }
+    }
+
+    drawDraftHeader(){
+
     }
 
     findCard(cardID){
@@ -165,5 +207,4 @@ export default class DraftManager {
     endDraft(){
 
     }
-
 }

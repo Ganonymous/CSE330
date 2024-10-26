@@ -25,7 +25,6 @@ export default class Switcher {
         const draft = new DraftManager(packSelect.value, packName, botCount);
         await draft.init();
         draft.startDraft();
-        this.switchtoLobby();
     }
     async switchtoLobby(){
         const sets = await external.getSets();
