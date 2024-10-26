@@ -1,3 +1,4 @@
+const baseURL = "https://mtgjson.com/api/v5/";
 
 async function convertToJson(res) {
     const jsonResponse = await res.json(); 
@@ -20,10 +21,34 @@ async function filterForBoosters(sets) {
 
 export default class ExternalServices {
     async getSets() {
-        const results = await fetch("https://mtgjson.com/api/v5/SetList.json");
+        const results = await fetch(`${baseURL}SetList.json`);
         const data = await convertToJson(results);
         const allSets = data.data;
-        const setsWithBoosters = await filterForBoosters(allSets)
+        console.log(allSets);
+        const setsWithBoosters = await filterForBoosters(allSets);
         return setsWithBoosters;
+    }
+
+    async getSetData(code){
+        const results = await fetch(`${baseURL}${code}.json`);
+        const fullData = await convertToJson(results);
+        const data = fullData.data;
+        return data;
+    }
+
+    async getSecondaryCards(code){
+        const result1 = await fetch("./json/secondarySets.json");
+        const setsData = await convertToJson(result1);
+        const secondarySets = setsData[code];
+        if(secondarySets){
+            let secondaryCards = [];
+            for (let i = 0; i < secondarySets.length; i++) {
+                const setResult = await fetch(`${baseURL}${secondarySets[i]}.json`);
+                const setData = await convertToJson(setResult);
+                const setCards = setData.data.cards;
+                secondaryCards = secondaryCards.concat(setCards);
+            }
+            return secondaryCards;
+        } else return [];
     }
 }
