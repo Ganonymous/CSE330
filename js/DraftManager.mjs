@@ -42,8 +42,9 @@ export default class DraftManager {
 
     startDraft(){
         this.drafters = [new Drafter("user")];
+        this.drafters[0].manager = this;
         for(let i = 0; i < this.botCount; i++){
-            this.drafters.push(new Drafter("bot"))
+            this.drafters.push(new Drafter("bot"));
         }
         shuffleArray(this.drafters);
         console.log(this.drafters);
@@ -86,6 +87,7 @@ export default class DraftManager {
                 }
                 this.drafters[0].currentPack = asideBooster;
             }
+            this.currentPick++;
             this.drawDraftHeader();
             this.drafters.forEach(drafter => drafter.processPack());
             this.advanceDraft();
@@ -96,7 +98,56 @@ export default class DraftManager {
     }
 
     drawDraftHeader(){
-
+        const header = document.querySelector("header");
+        header.innerHTML = "";
+        const passDirection = (this.currentRound % 2 == 1)? "right" : "left";
+        const arrowSrc = `./images/arrow_${passDirection}_icon.png`;
+        const arrowAlt = `Arrow pointing ${passDirection}, by Interactivemania on iconfinder.com`;
+        let displayDrafters = [];
+        if(this.drafters.length < 5){
+            displayDrafters = this.drafters;
+        } else {
+            const userIndex = this.drafters.findIndex(drafter => drafter.type == "user");
+            for(let i = -2; i <= 2; i++){
+                const nextDrafter = this.drafters[(userIndex + i + this.drafters.length) % this.drafters.length];
+                console.log(nextDrafter);
+                displayDrafters.push(nextDrafter);
+            }
+        }
+        const draftersDiv = document.createElement("div");
+        draftersDiv.classList.add("drafters");
+        header.appendChild(draftersDiv);
+        const templateArrow = document.createElement("img");
+        templateArrow.src = arrowSrc;
+        templateArrow.alt = arrowAlt;
+        templateArrow.height = "25";
+        templateArrow.width = "25";
+        draftersDiv.appendChild(templateArrow.cloneNode(true));
+        displayDrafters.forEach(drafter => {
+            const botMode = drafter.type == "bot";
+            const drafterDiv = document.createElement("div");
+            drafterDiv.classList.add("drafter");
+            const profileImg = document.createElement("img");
+            profileImg.src = `./images/user_circle_${botMode? "gear_" : ""}fill_icon.png`;
+            profileImg.alt = `User icon of a person in a circle ${botMode? "with a gear " : ""} by Phosphor Icons on iconfinder.com`;
+            profileImg.height = "50";
+            profileImg.width = "50";
+            drafterDiv.appendChild(profileImg);
+            const nameplate = document.createElement("p");
+            nameplate.classList.add("nameplate");
+            nameplate.textContent = botMode ? `Bot ${drafter.name}` : "You";
+            drafterDiv.appendChild(nameplate);
+            draftersDiv.append(drafterDiv);
+            draftersDiv.append(templateArrow.cloneNode(true));
+        })
+        const statusDiv = document.createElement("div");
+        const packH = document.createElement("h4");
+        packH.textContent = `Pack: ${this.currentRound}`;
+        const pickP = document.createElement("p");
+        pickP.textContent = `Pick: ${this.currentPick}`;
+        statusDiv.appendChild(packH);
+        statusDiv.appendChild(pickP);
+        header.appendChild(statusDiv);
     }
 
     findCard(cardID){

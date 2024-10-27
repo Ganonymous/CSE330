@@ -24,6 +24,7 @@ export default class Switcher {
         const botCount = document.querySelector("#botCount").value;
         const draft = new DraftManager(packSelect.value, packName, botCount);
         await draft.init();
+        draft.switcher = this;
         draft.startDraft();
     }
     async switchtoLobby(){
