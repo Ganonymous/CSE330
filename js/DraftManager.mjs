@@ -47,7 +47,6 @@ export default class DraftManager {
             this.drafters.push(new Drafter("bot"));
         }
         shuffleArray(this.drafters);
-        console.log(this.drafters);
         const testBooster = this.fillPack(this.pickPack());
         this.totalRounds = Math.ceil(40 / testBooster.length);
         this.currentRound = 1;
@@ -59,8 +58,6 @@ export default class DraftManager {
     startRound(){
         if(this.currentRound <= this.totalRounds){
             this.buildBoosters();
-            console.log(`Round ${this.currentRound} boosters:`);
-            console.log(this.boostersList);
             this.drafters.forEach(drafter => {
                 drafter.currentPack = this.boostersList.pop()
             });
@@ -90,7 +87,7 @@ export default class DraftManager {
             this.currentPick++;
             this.drawDraftHeader();
             this.drafters.forEach(drafter => drafter.processPack());
-            this.advanceDraft();
+            return;
         } else {
             this.currentRound++;
             this.startRound();
@@ -110,7 +107,6 @@ export default class DraftManager {
             const userIndex = this.drafters.findIndex(drafter => drafter.type == "user");
             for(let i = -2; i <= 2; i++){
                 const nextDrafter = this.drafters[(userIndex + i + this.drafters.length) % this.drafters.length];
-                console.log(nextDrafter);
                 displayDrafters.push(nextDrafter);
             }
         }
@@ -141,6 +137,7 @@ export default class DraftManager {
             draftersDiv.append(templateArrow.cloneNode(true));
         })
         const statusDiv = document.createElement("div");
+        statusDiv.id = "draftStatus";
         const packH = document.createElement("h4");
         packH.textContent = `Pack: ${this.currentRound}`;
         const pickP = document.createElement("p");
@@ -256,6 +253,21 @@ export default class DraftManager {
     }
 
     endDraft(){
-
+        const statusDiv = document.querySelector("#draftStatus");
+        statusDiv.innerHTML = "<h3>Your Pool</h3>"
+        const userDrafter = this.drafters.find(drafter => drafter.type == "user");
+        userDrafter.savePool();
+        userDrafter.showPool();
+        const main = document.querySelector("main");
+        const restartButton = document.createElement("button");
+        restartButton.id = "restartBtn";
+        restartButton.textContent = "Restart Draft";
+        restartButton.addEventListener("click", e => this.startDraft());
+        main.appendChild(restartButton);
+        const endButton = document.createElement("button");
+        endButton.id = "endBtn";
+        endButton.textContent = "End Draft and return to lobby";
+        endButton.addEventListener("click", e => this.switcher.switchToLobby());
+        main.appendChild(endButton);
     }
 }

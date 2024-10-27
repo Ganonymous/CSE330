@@ -27,7 +27,7 @@ export default class Switcher {
         draft.switcher = this;
         draft.startDraft();
     }
-    async switchtoLobby(){
+    async switchToLobby(){
         const sets = await external.getSets();
         this.lobby.buildLobby(sets);
         const startButton = document.querySelector("#startBtn")
