@@ -1,3 +1,5 @@
+import {buildPool, getLocalStorage, setLocalStorage, generateUUID} from "./utils.mjs"
+
 export default class Drafter{
     constructor(type){
         this.type = type
@@ -18,9 +20,13 @@ export default class Drafter{
     drawPack(){
         const main = document.querySelector("main");
         main.innerHTML = "";
+        const cardsSect = document.createElement("section");
+        cardsSect.classList.add("cards");
+        main.appendChild(cardsSect);
         this.currentPack.forEach(card => {
             const displayDiv = document.createElement("div");
             displayDiv.classList.add("card");
+            displayDiv.classList.add(card.rarity);
             if(card.identifiers.multiverseId){
                 const cardImg = document.createElement("img");
                 cardImg.src = `https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=${card.identifiers.multiverseId}&type=card`;
@@ -43,9 +49,14 @@ export default class Drafter{
                 displayDiv.appendChild(cardText);
             }
             displayDiv.addEventListener("click", e => this.pickCard(card));
-            main.appendChild(displayDiv);
+            cardsSect.appendChild(displayDiv);
         })
-
+        main.appendChild(document.createElement("hr"));
+        const poolLabel = document.createElement("h2");
+        poolLabel.textContent = "Current Pool";
+        main.appendChild(poolLabel);
+        const poolSect = buildPool(this.pool);
+        main.appendChild(poolSect);
     }
 
     pickCard(card){
@@ -75,37 +86,15 @@ export default class Drafter{
         this.name = namesArray[nameIndex];
     }
 
-    savePool(){
-
+    savePool(packName, bots){
+        let pools = getLocalStorage("almtgds-pools") || [];
+        let savePool = {};
+        savePool.pack = packName;
+        savePool.bots = bots;
+        savePool.pool = this.pool;
+        savePool.uuid = generateUUID();
+        pools.push(savePool);
+        setLocalStorage("almtgds-pools", pools);
     }
-    showPool(){
-        const main = document.querySelector("main");
-        main.innerHTML = "";
-        this.pool.forEach(card => {
-            const displayDiv = document.createElement("div");
-            displayDiv.classList.add("card");
-            if(card.identifiers.multiverseId){
-                const cardImg = document.createElement("img");
-                cardImg.src = `https://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=${card.identifiers.multiverseId}&type=card`;
-                cardImg.alt = `${card.name}, image from gatherer.wizards.com`;
-                cardImg.height = "310";
-                cardImg.width = "223";
-                displayDiv.appendChild(cardImg);
-            } else {
-                const nameH3 = document.createElement("h3");
-                nameH3.textContent = card.name;
-                const costP = document.createElement("p");
-                costP.textContent = card.manaCost;
-                const typesH4 = document.createElement("h4");
-                typesH4.textContent = card.type;
-                const cardText = document.createElement("p");
-                cardText.textContent = card.text;
-                displayDiv.appendChild(nameH3);
-                displayDiv.appendChild(costP);
-                displayDiv.appendChild(typesH4);
-                displayDiv.appendChild(cardText);
-            }
-            main.appendChild(displayDiv);
-        })
-    }
+    
 }

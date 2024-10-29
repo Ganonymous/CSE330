@@ -1,5 +1,5 @@
 import ExternalServices from "./externalServices.mjs";
-import { weightedRandomChoice, shuffleArray } from "./utils.mjs";
+import { weightedRandomChoice, shuffleArray, buildPool } from "./utils.mjs";
 import Drafter from "./Drafter.mjs";
 
 const external = new ExternalServices;
@@ -254,20 +254,29 @@ export default class DraftManager {
 
     endDraft(){
         const statusDiv = document.querySelector("#draftStatus");
-        statusDiv.innerHTML = "<h3>Your Pool</h3>"
-        const userDrafter = this.drafters.find(drafter => drafter.type == "user");
-        userDrafter.savePool();
-        userDrafter.showPool();
+        statusDiv.innerHTML = "<h3>Your Pool</h3>";
+
         const main = document.querySelector("main");
+        main.innerHTML = "";
+
+        const userDrafter = this.drafters.find(drafter => drafter.type == "user");
+        userDrafter.savePool(this.packName, this.botCount);
+        main.appendChild(buildPool(userDrafter.pool));
+
+        const buttonsDiv = document.createElement("div");
+        buttonsDiv.id = "draftEndButtons";
+        main.appendChild(buttonsDiv);
+
         const restartButton = document.createElement("button");
         restartButton.id = "restartBtn";
         restartButton.textContent = "Restart Draft";
         restartButton.addEventListener("click", e => this.startDraft());
-        main.appendChild(restartButton);
+        buttonsDiv.appendChild(restartButton);
+        
         const endButton = document.createElement("button");
         endButton.id = "endBtn";
         endButton.textContent = "End Draft and return to lobby";
         endButton.addEventListener("click", e => this.switcher.switchToLobby());
-        main.appendChild(endButton);
+        buttonsDiv.appendChild(endButton);
     }
 }
