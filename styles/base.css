@@ -49,6 +49,7 @@
 }
 
 .card {
+    display: block;
     border: 1px solid black;
     border-radius: 12px;
     width: 223px;
@@ -110,4 +111,64 @@ button {
 #draftEndButtons {
     display: flex;
     justify-content: center;
+}
+
+@keyframes flip-up {
+    0%{
+        display: none;
+        height: 310px;
+        margin: 0 auto;
+        width: 0;
+        transform: translateX(112px);
+    }
+    49%{
+        display: none;
+    }
+    50%{
+        display: block;
+        width: 0;
+        transform: translateX(112px);
+    }
+    100%{
+        width: 223px;
+        transform: translateX(0);
+    }
+}
+
+@keyframes flip-down {
+    0%{
+        display: block;
+        width: 223px;
+        height: 310px;
+        margin: 0 auto;
+        transform: translateX(0);
+    }
+    50%{
+        width: 0;
+    }
+    51%{
+        display: none;
+    }
+    100%{
+        display: none;
+    }
+}
+
+
+.face-up {
+    animation-name: flip-up;
+    animation-timing-function: ease-in-out;
+    animation-duration: .5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+    animation-delay: .33s;
+}
+
+.face-down {
+    animation-name: flip-down;
+    animation-timing-function: ease-in-out;
+    animation-duration: 0.5s;
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+    animation-delay: .33s;
 }

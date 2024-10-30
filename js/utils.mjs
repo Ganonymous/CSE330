@@ -31,6 +31,8 @@ export function buildPool(pool){
             cardImg.width = "223";
             displayDiv.appendChild(cardImg);
         } else {
+            const imitatorCard = document.createElement("div");
+            imitatorCard.classList.add("card");
             const nameH3 = document.createElement("h3");
             nameH3.textContent = card.name;
             const costP = document.createElement("p");
@@ -39,10 +41,11 @@ export function buildPool(pool){
             typesH4.textContent = card.type;
             const cardText = document.createElement("p");
             cardText.textContent = card.text;
-            displayDiv.appendChild(nameH3);
-            displayDiv.appendChild(costP);
-            displayDiv.appendChild(typesH4);
-            displayDiv.appendChild(cardText);
+            imitatorCard.appendChild(nameH3);
+            imitatorCard.appendChild(costP);
+            imitatorCard.appendChild(typesH4);
+            imitatorCard.appendChild(cardText);
+            displayDiv.appendChild(imitatorCard);
         }
         cardsSect.appendChild(displayDiv);
     })
