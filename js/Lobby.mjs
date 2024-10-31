@@ -107,7 +107,7 @@ export default class Lobby {
         deleteButton.addEventListener("click", e => {
             deletePool(pastPool); 
             this.buildLobby(this.sets);
-            this.connectStartButton});
+            this.connectStartButton()});
         poolArticle.appendChild(deleteButton);
 
         const main = document.querySelector("main");

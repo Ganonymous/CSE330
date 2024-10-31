@@ -62,11 +62,15 @@ export default class Drafter{
                 imitatorCard.classList.add(card.rarity);
                 displayDiv.appendChild(imitatorCard)
             }
-            displayDiv.addEventListener("click", e => this.pickCard(card));
+            displayDiv.addEventListener("click", e => {
+                this.pickCard(card);
+                e.target.outerHTML = e.target.outerHTML;
+            });
             setTimeout(() => {
                 cardsSect.appendChild(displayDiv);
             }, i * 250);
         }
+        this.picked = false;
         main.appendChild(document.createElement("hr"));
         const poolLabel = document.createElement("h2");
         poolLabel.textContent = "Current Pool";
@@ -76,25 +80,28 @@ export default class Drafter{
     }
 
     pickCard(card){
-        window.scroll(0, 0);
-        this.pool.push(card);
-        const cardIndex = this.currentPack.indexOf(card);
-        const cardsSect = document.querySelector(".cards");
-        const cardsArray = cardsSect.childNodes;
-        this.currentPack.splice(cardIndex, 1);
-        for (let i = 0; i < cardsArray.length; i++) {
-            const displayDiv = cardsArray[i];
-            setTimeout(() => {
-                displayDiv.childNodes.forEach(card => {
-                    card.classList.toggle("face-down");
-                    card.classList.toggle("face-up");
+        if(!this.picked){
+            this.picked = true;
+            window.scroll(0, 0);
+            this.pool.push(card);
+            const cardIndex = this.currentPack.indexOf(card);
+            const cardsSect = document.querySelector(".cards");
+            const cardsArray = cardsSect.childNodes;
+            this.currentPack.splice(cardIndex, 1);
+            for (let i = 0; i < cardsArray.length; i++) {
+                const displayDiv = cardsArray[i];
+                setTimeout(() => {
+                    displayDiv.childNodes.forEach(card => {
+                        card.classList.toggle("face-down");
+                        card.classList.toggle("face-up");
 
-                });
-            }, i * 100);
+                    });
+                }, i * 100);
+            }
+            setTimeout(() => {
+                this.manager.advanceDraft()
+            }, (cardsArray.length * 100) + 800);
         }
-        setTimeout(() => {
-            this.manager.advanceDraft()
-        }, (cardsArray.length * 100) + 800);
     }
 
     determineBotType(){
