@@ -10,7 +10,7 @@ export default class Switcher {
         this.lobby = lobby;
     }
     init() {
-        this.lobby.switcher = this.
+        this.lobby.switcher = this
         this.lobby.connectStartButton();
     }
     async switchToDraft(){
