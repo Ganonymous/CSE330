@@ -10,15 +10,10 @@ export default class Switcher {
         this.lobby = lobby;
     }
     init() {
-        const startButton = document.querySelector("#startBtn")
-        startButton.addEventListener("click", () => {
-            if(this.lobby.validateDraftSettings()){
-                this.switchtoDraft();
-            }
-        })
-
+        this.lobby.switcher = this.
+        this.lobby.connectStartButton();
     }
-    async switchtoDraft(){
+    async switchToDraft(){
         const packSelect = document.querySelector("#selector");
         const packName = packSelect.options[packSelect.selectedIndex].text;
         const botCount = document.querySelector("#botCount").value;
@@ -30,11 +25,6 @@ export default class Switcher {
     async switchToLobby(){
         const sets = await external.getSets();
         this.lobby.buildLobby(sets);
-        const startButton = document.querySelector("#startBtn")
-        startButton.addEventListener("click", () => {
-            if(this.lobby.validateDraftSettings()){
-                this.switchtoDraft();
-            }
-        })
+        this.lobby.connectStartButton();
     }
 }

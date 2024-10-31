@@ -104,10 +104,22 @@ export default class Lobby {
         const deleteButton = document.createElement("button");
         deleteButton.classList.add("delBtn");
         deleteButton.textContent = "Delete Pool";
-        deleteButton.addEventListener("click", e => {deletePool(pastPool); this.buildLobby(this.sets)});
+        deleteButton.addEventListener("click", e => {
+            deletePool(pastPool); 
+            this.buildLobby(this.sets);
+            this.connectStartButton});
         poolArticle.appendChild(deleteButton);
 
         const main = document.querySelector("main");
         main.appendChild(poolArticle);
+    }
+
+    connectStartButton(){
+        const startButton = document.querySelector("#startBtn");
+        startButton.addEventListener("click", () => {
+            if(this.validateDraftSettings()){
+                this.switcher.switchToDraft();
+            }
+        })
     }
 }
