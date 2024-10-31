@@ -50,11 +50,19 @@
 
 .card {
     display: block;
-    border: 1px solid black;
     border-radius: 12px;
     width: 223px;
     margin: .25rem auto;
     height: 310px;
+}
+
+.card .card {
+    border: 1px solid black;
+    border-radius: 12px;
+}
+
+.card img {
+    border-radius: 12px;
 }
 
 .card h3, .card h4, .card p {

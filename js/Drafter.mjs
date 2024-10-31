@@ -33,7 +33,6 @@ export default class Drafter{
             const card = this.currentPack[i];
             const displayDiv = document.createElement("div");
             displayDiv.classList.add("card");
-            displayDiv.classList.add(card.rarity);
             displayDiv.appendChild(cardBackTemplate.cloneNode(true));
             if(card.identifiers.multiverseId){
                 const cardImg = document.createElement("img");
@@ -42,6 +41,7 @@ export default class Drafter{
                 cardImg.height = "310";
                 cardImg.width = "223";
                 cardImg.classList.add("face-up");
+                cardImg.classList.add(card.rarity);
                 displayDiv.appendChild(cardImg);
             } else {
                 const imitatorCard = document.createElement("div");
@@ -59,6 +59,7 @@ export default class Drafter{
                 imitatorCard.appendChild(costP);
                 imitatorCard.appendChild(typesH4);
                 imitatorCard.appendChild(cardText);
+                imitatorCard.classList.add(card.rarity);
                 displayDiv.appendChild(imitatorCard)
             }
             displayDiv.addEventListener("click", e => this.pickCard(card));
@@ -75,6 +76,7 @@ export default class Drafter{
     }
 
     pickCard(card){
+        window.scroll(0, 0);
         this.pool.push(card);
         const cardIndex = this.currentPack.indexOf(card);
         const cardsSect = document.querySelector(".cards");
@@ -91,7 +93,6 @@ export default class Drafter{
             }, i * 100);
         }
         setTimeout(() => {
-            window.scroll(0, 0);
             this.manager.advanceDraft()
         }, (cardsArray.length * 100) + 800);
     }

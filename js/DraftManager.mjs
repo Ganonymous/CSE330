@@ -13,9 +13,7 @@ export default class DraftManager {
 
     async init(){
         const external = new ExternalServices;
-        console.log(`Starting ${this.packName} draft with ${this.botCount} bots`);
         this.set = await external.getSetData(this.setCode);
-        console.log(this.set);
         this.findBooster(this.packName);
         this.secondaryCards = await external.getSecondaryCards(this.setCode);
     }
@@ -272,7 +270,7 @@ export default class DraftManager {
         restartButton.textContent = "Restart Draft";
         restartButton.addEventListener("click", e => this.startDraft());
         buttonsDiv.appendChild(restartButton);
-        
+
         const endButton = document.createElement("button");
         endButton.id = "endBtn";
         endButton.textContent = "End Draft and return to lobby";
